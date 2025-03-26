@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  
+<title>Oak Bluffs Historic Highlands Map</title>
+  
+<!--jquery js-->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<!--jQuery UI files-->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+
+<!--jQuery UI Touch js, required for touchscreen use-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+  
+<!--leaflet files-->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+  
+<!--other js files-->
+<script src="js/leaflet-sidebar.js"></script>
+<script src="https://unpkg.com/leaflet.tilelayer.mbtiles@latest/Leaflet.TileLayer.MBTiles.js"></script>
+<script src="https://unpkg.com/sql.js@0.3.2/js/sql.js"></script>
+<script type="text/javascript" src="js/L.Control.ZoomBar.js"></script>
+<script src="js/SliderControl.js"></script>
+<script src="js/leaflet-search.src.js"></script>
+<script src="js/leaflet.legend.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5/turf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aazuspan/leaflet-feature-legend/src/feature-legend.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/aazuspan/leaflet-feature-legend/src/feature-legend.css" rel="stylesheet" />
+
+
+
+<!--other css files-->
+<link rel="stylesheet" href="css/leaflet-sidebar.css"/>
+<link rel="stylesheet" href="css/general.css"/>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/L.Control.ZoomBar.css"/>
+<link rel="stylesheet" href="css/SliderControl.css"/>
+<link rel="stylesheet" href="css/leaflet-search.src.css"/>
+<link rel="stylesheet" href="css/form-style.css"/>
+<link rel="stylesheet" href="css/leaflet.legend.css"/>
+
+
+
+  
+<style>
+html, body {
+			height: 100%;
+			margin: 0;
+		}
+  
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+</style>
+
+  <script>
+  window.console = window.console || function(t) {};
+</script>
+
+  
+  
+  <script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+
+</head>
+
+
+<body>
+<div id="map">Test this text</div>
+
+<div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-bars center"></i></a></li>
+                <li><a href="#history" role="tab"><i class="fa fa-info"></i></a></li>
+                <li><a href="#citations" role="tab"><i class="fa fa-bookmark"></i></a></li>
+                <li><a href="#messages" role="tab"><i class="fa fa-envelope"></i></a></li>
+                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+            </ul>
+        <!-- add more tab panes here, copy / paste -->   
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    Oak Bluffs Historic Higlands Map
+                    <br> 
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+
+                
+
+            <p class="lorem" style="line-height: 150%">The Oak Bluffs Historic Highlands Archaeology project introduces the Historic Highlands Property Map; a web-based, interactive map that uses publicly available deed documents to represent the history of landownership in the Highlands area of Oak Bluffs, MA, on the island of Martha’s Vineyard. Oak Bluffs has historically been a pluralistic, multi-ethnic and multi-racial, summer and year-round community, famously noted for being a popular place for African American vacationers<sup>1</sup>.  
+                <br>
+                <br>
+            This map spatializes, or represents visually in geographic space, 19th and 20th century property records held in the Dukes County Registry of Deeds (<a href="https://www.masslandrecords.com/Dukes/default.aspx" target="_blank">Link</a>). Spatializing these records allows visitors to view aspects of the Highlands community at different points in time, including the size of the community, distribution of owned lots, sale / purchase prices, and demographic information on residents. Many deed records on this map have been combined with census records, on individuals and families and the community itself. This additional information can be explored through links to chain of title records in each of the popups that appear for the properties. 
+                <br><br>
+            Visitors to the <a href="https://kora.oakbluffsarchaeology.org/home" target="_blank">Historic Highlands Archaeology Project</a> website can log into the database with the username <b>guest</b> and password <b>oakbluffs</b> or make their own account. We will continually be adding information to these records and invite any visitors to share their stories, knowledge, and understandings with our team.
+                <br>
+                <br>
+            After opening the interactive Historic Highlands Property Map, visitors will see most of the lots owned and lived on in the Highlands from 1870, when lots were first sold in the area, to 1959, when our project ends. To see all the properties, move the slider on the right side of the map to the end. This “time slider” tool allows visitors to explore the Vineyard Highlands community at different points in time, from the purchase of the first lot in April 1870 to the end of our study period in December 1959. Lots will appear and disappear as the slider is adjusted. 
+                <br><br>
+            Visitors can explore the map by clicking on properties and a popup will appear with the history of the property, starting with the earliest transaction. Hovering over properties with the cursor show some details in an information box on the right of your screen and visitors can also use the search box to look for individuals, lot numbers, or other more specific information. 
+                <br>
+                <br>
+            The lots on this map are color coded to some information at a glance. Properties that are owned at any given point in time appear in green and continuously owned properties will look darker as more layers are stacked. Properties known to have been purchased and owned by people of African descent appear outlined in maroon. Using census records and speaking with community members, we have identified 129 deeds where people of African descent purchased or sold land for 22 different properties. Lastly, as this map explores the ways racism and racialization shaped the growth of the Highlands and the lives of those living there, properties with racist and religiously discriminatory restrictive covenants appear in yellow. These restrictive covenants were found in 31 deed records, all conveyed by the Highlands Property Trust from 1936-1950. The restrictions stated the property and buildings on it </p><blockquote>shall be used, occupied or enjoyed only by persons of the white race who are of the Christian religion, excepting only servants actually in the employ of the occupant</blockquote><p class="lorem" style="line-height: 150%">This information can be seen in the legend in the bottom right of the screen.
+                <br>
+                <br>
+            The overall goal of the Oak Bluffs Historic Highlands Property map is to make the history of property ownership in the Highlands visible and accessible the present-day community, descendant community members, and community heritage experts, like the African American Heritage Trail of Martha’s Vineyard, the Oak Bluffs Polar Bears, and the Cottagers. Users of the map can explore how the community grew and changed over time, explore this history of the property their family owns, or view where their friends and family lived in the past. 
+                <br>
+                <br>
+            The map is designed to facilitate conversations about these histories, answer questions about property ownership and land transfers, and, eventually, to record memories shared through these discussions. As secondary goal of the map is to facilitate conversations about cultural heritage, preservation, and initiate conversations about utilizing archaeology as another tool with which the community can preserve, learn about, and share its history.
+                <br>
+                <br>
+                <hr>
+            <strong>Disclaimer:</strong> Information displayed is for inquiry purposes and does not constitute a legally binding document.
+                </p>
+                
+
+            </div>
+
+            <div class="sidebar-pane" id="history">
+                <h1 class="sidebar-header">History<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            <p class="lorem" style="line-height: 150%">The Highlands area of Oak Bluffs was purchased by the wealthy residents who formed Vineyard Grove Company who hoped oping to build a densely populated, thriving, and for them, highly profitable, summer vacation community centered around Methodist summer revivals. In 1870, The Vineyard Grove Company mapped and divided the area into hundreds of small 70-foot by 30-foot parcels in 1870, namming the development the Vineyard Highlands. However, the Methodist Camp Meeting never moved their revivals to the Highlands and the economic rescessions of 1870 depressed propety sales. In response, the Vineyard Grove Company made a deal with a smaller Baptist organization to hold revivals and the community grew slowly over time, with a mix of summer homes and larger institutions.  
+                <br>
+                <br>
+            Historical records and trends in deed records for the Highlands indicate that the earliest residents were predominantly people of European descent from Massachusetts, Rhode Island, Connecticut, and New York, including Baptist preachers and their families. Yet, our research shows that people of African descent were among earliest residents of the Highlands. Identified residents include Dr. Samuel T. Brimingham, who bought property on Beecher Park in August 1870, and Ralph Mitchell, Patience Simmonds, Lucy Matthews, and Mary Ann Mitchell who all bought land in the Highlands between 1887 and 1890. The Baptist Revivals held there introduced new residents to Oak Bluffs and the Highlands community, including Charles and Henrietta Shearer, and by the first decade of the 20th century it had gained a reputation as being a place where Black vacationers could own property, rent homes, and stay in hotels or inns, a reputation that still stands today<sup>1</sup>. 
+                <br>
+                <br>     
+                </p>
+            </div>
+                
+            <div class="sidebar-pane" id="citations">
+                <h1 class="sidebar-header">Acknowledgments & References<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+		<h3>Acknowledgments</h3>  
+	    <p class="lorem" style="line-height: 150%">The Historic Highlands Property map was made by Jeffrey Burnett, a PhD candidate at Michigan State University using <a href="https://www.masslandrecords.com/Dukes/default.aspx" target="_blank">Leafletsjs</a>, an opensource JavaScript library for creating web mapping services and projects. The framework for this map was developed during the author's 2021-2022 CHI fellowship.
+                    <br><br>
+             The author worked with residents of the Highlands and Oak Bluffs, the African American Trail of Martha's Vineyard, the Dukes County Registry of Deeds, CHI director Ethan Watrall, and CHI fellows and alumni to produce this map. This is a trial version of a future map licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+        </p>
+        <hr>
+      <h3>References</h3>      
+      <ol>
+          <li>Cromwell, "The History of Oak Bluffs as a Popular Resort for Blacks," Dukes County Intelligencer 26, no. 1 (August 1984)</li>
+          <li>Cromwell 1984; Robert C. Hayden, <i>African-Americans on Martha's Vineyard & Nantucket: A history of people, places and events</i>, Select Publications, 1999; Jocelyn Coleman Walton, “Life in the Highlands,” Martha’s Vineyard Magazine, 2016; Elaine Cawley Weintraub, <i>Lighting the Trail: The African American Heritage of Martha's Vineyard</i>, 2015.</li>
+		  
+		  </ol>
+            </div>
+
+            <div class="sidebar-pane" id="messages">
+                <h1 class="sidebar-header">Messages<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+		    <p><b><a class="one" href="mailto:fadat85580@nefacility.com" target="_blank">Contact Us!</a></b></p>
+            </div>
+
+            <div class="sidebar-pane" id="settings">
+                <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+        </div>
+    </div>
+    
+
+      <script id="rendered-js" >
+var basemap_color = 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
+var basemap_satellite = 'https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}.jpg?key=kUPH9bhggOn8sGeOtVCW';
+var overlay_1890 = 'https://burne138.nextgis.com/api/component/render/tile?resource=3&nd=204&z={z}&x={x}&y={y}';
+var overlay_1906 = 'https://burne138.nextgis.com/api/component/render/tile?resource=4&nd=204&z={z}&x={x}&y={y}';
+
+
+var map = L.map('map', {
+    editable: true,
+    minZoom: 12,
+    maxZoom: 19,
+    zoomControl: false}).setView([41.461070584121636, -70.56516015402862], 15);
+    map.setMaxBounds(map.getBounds());
+
+var basemapLayerColor = L.tileLayer(basemap_color, {
+  noWrap: true,
+  minZoom: 11,
+  maxZoom: 20,
+  attribution: '<div id="content-attribution">Standard Basemap &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a></div>'
+}).addTo(map);
+
+var basemapLayerSatellite = L.tileLayer(basemap_satellite,{
+        noWrap: true,
+        tileSize: 512,
+        zoomOffset: -1,
+        maxZoom: 20,
+        minZoom: 11,
+        attribution: '<div id="content-attribution">Satellite Basemap &copy; <a href="https://www.maptiler.com/" target="_blank">MapTiler</a></div>',
+        crossOrigin: true
+      }).addTo(map);
+
+var overlayLayer1890 = L.tileLayer(overlay_1890, {
+  noWrap: true,
+  maxZoom: 20,
+  minZoom: 11,
+  opacity: 0.6,
+  attribution: '<div id="content-attribution">ca. 1890 Map - <a href="https://collections.leventhalmap.org/search/commonwealth:x059cd109" target="_blank">BPL, Leventhal Map Center</a></div>',
+}).addTo(map);
+
+var overlayLayer1906 = L.tileLayer(overlay_1906, {
+  noWrap: true,
+  maxZoom: 18,
+  minZoom: 13,
+  opacity: 0.6,
+  attribution: '<div id="content-attribution">ca. 1906 Map - <a href="https://www.masslandrecords.com/Dukes/default.aspx" target="_blank">Dukes County Registry of Deeds</a></div>',
+}).addTo(map);
+
+map.attributionControl.addAttribution('<div id="content-attribution" xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"> | <a property="dct:title" rel="cc:attributionURL" href="https://historic-highlands.oakbluffsarchaeology.org/">Historic Highlands Prperty Map</a> by <span property="cc:attributionName">Jeffrey Burnett</span> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></div>');
+
+var baseMaps = {
+    "Satellite": basemapLayerSatellite,
+    "Standard": basemapLayerColor
+   };
+
+var overlayMaps = {
+    "1870 Historic Map": overlayLayer1890,
+    "1906 Historic Map" : overlayLayer1906
+};
+
+var mql = window.matchMedia('(max-width:991px)');
+
+let mobileView = mql.matches;    
+
+var mobileZoomBox =  L.Control.extend({
+
+options: {
+  position: 'topright'
+},
+ 
+onAdd: function (map) {
+  var container = L.DomUtil.create('div');
+  container.type="div";
+  container.title="Mobile Zoom Box";
+  container.textContent = 'Pinch To Zoom';
+  
+  container.style.backgroundColor = 'white';
+  container.style.fontSize = "22px";
+  container.style.fontWeight = "700";
+  container.style.textAlign = "center";
+  container.style.backgroundSize = "100px 65px";
+  container.style.width = '100px';
+  container.style.height = '65px';
+  
+
+  return container;
+}
+});
+
+if (mobileView) {
+    map.addControl(new mobileZoomBox());;
+} else {
+    var zoom_bar = new L.Control.ZoomBar({position: 'topright'}).addTo(map);
+}
+
+
+L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
+
+var infoDesktop = L.control();
+var infoMobile = L.control();
+
+infoDesktop.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+
+infoMobile.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+
+// method that we will use to update the control based on feature properties passed
+infoDesktop.update = function (props) {
+        this._div.innerHTML = '<div id="content-desktop"; style="max-width: 400px; white-space: normal"><h3>Lot Information</h3>' + '<p style="line-height: 150%; font-size: 1.1em">' +  (props ?
+        'Lot(s) #' + props.lot_number + ' owned by ' + props.grantee + ' starting on ' + props.time + ' bought for ' + props.cost + '. ' + "<br>" + "<b>" + props.restrictions2 
+        : 'Hover over a lot</b></p></div>');
+    };
+    
+infoMobile.update = function (props) {
+        this._div.innerHTML = '<div id="content-mobile"><p style="font-size: 2em">Click on a lot to learn more</p></div>';
+        };
+
+if (mobileView) {
+    infoMobile.addTo(map);
+} else {
+    infoDesktop.addTo(map);
+}
+
+function getColor(p) {
+    return  p == "False" ? '#009f9b' :
+            p == "True" ? '#9f9b00' : 
+                    '#009f9b';
+}
+
+/* used this green for a long time (#009e73); blue (#009e9b) is split comp with dark o-b (#9e4c00) & dark pink (#9e0052) and triadic with dark olive-yellow / v. dark o-y (#9e9b00 / #525000) & dark megenta (#9b009e) */
+
+function getColor2(p) {
+    return  p == ("Person of African descent" || "People of African and Indigenous American descent" || "People of African and people of European descent") ? '#58002e' : 
+                    '#000000';
+}
+
+
+
+/*other colors could be Dark red (#9e2400), dark pink / v d-p (#850045/#6b0038), or Dark Violet (#73009e), or Dark orange-brown / v. dark o-b (#9e7300 / #523b00)  */
+
+if (mobileView) {
+    function style(feature) {
+		return {
+			weight: 4,
+			opacity: 1,
+			color: getColor2(feature.properties.grantee_racial_cat),
+			dashArray: 'none',
+			fillOpacity: 0.4,
+			fillColor: getColor(feature.properties.restrictions),
+		};
+	}
+} else {
+    function style(feature) {
+		return {
+			weight: 1.5,
+			opacity: 1,
+			color: getColor2(feature.properties.grantee_racial_cat),
+			dashArray: 'none',
+			fillOpacity: 0.4,
+			fillColor: getColor(feature.properties.restrictions),
+		};
+	}
+}
+
+
+function highlightFeature(e) {
+	var layer = e.target;
+
+	layer.setStyle({
+		weight: 4,
+        fillColor: '#feb3ff',
+		dashArray: '',
+		fillOpacity: 0.7
+	});
+
+	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		layer.bringToFront();
+	};
+	
+	var layerMobile = e.target;
+
+	layer.setStyle({
+		weight: 5,
+        fillColor: '#feb3ff',
+		dashArray: '',
+		fillOpacity: 0.7
+	});
+
+	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		layer.bringToFront();
+	};
+
+	infoDesktop.update(layer.feature.properties);
+	infoMobile.update(layerMobile.feature.properties);
+}
+
+var polygons
+
+	function resetHighlight(e) {
+		polygons.resetStyle(e.target);
+		infoDesktop.update();
+		infoMobile.update();
+}
+
+
+if (mobileView) {
+    function zoomToFeature(e) {
+      map.fitBounds(e.target.getBounds());
+      var point = turf.point([e.latlng.lng, e.latlng.lat]);
+      var content = '';
+      polygons.eachLayer(function(layer) {
+      var feature = layer.feature;
+        if (turf.booleanPointInPolygon(point, feature)) {
+          content += "<div style='clear: both'></div><div><p>" + "<font size=6em>" + "<strong>" + 'Lot(s): ' + "</strong>" + feature.properties.lot_number + "</p>" /*+ "<center><img src='images/" + feature.properties.picture + "' style='width:200px;height:300x;'></center>"*/ + "<p>" + "<font size=6em>" + "<strong>" + 'Grantee: ' + "</strong>" + feature.properties.grantee + "</p><p>" + "<strong>" + 'Date: ' + "</strong>" + feature.properties.time + "</p><p>" + "<strong>" + 'Conveyance: ' + "</strong>" + feature.properties.cost + "</p><p>" + "<strong>" + feature.properties.restrictions2 + "</strong>" + "</p><p>" + "<strong>" + 'Summary: ' + "</strong>" + feature.properties.deed_summary + "</p><p>" + "<font size=6em><a href=https://kora.oakbluffsarchaeology.org/projects/2/forms/3/records/" + feature.properties.cot_link1 + " target='_blank'>" + "Click here for more info" + "</a>" + "</p></div>"; 
+    }
+  });
+var popup = L.popup({
+    maxHeight: 500,
+    minWidth: 400,
+    keepInView: true,    
+  })
+    .setLatLng(e.latlng)
+    .setContent(content)
+    .openOn(map);
+}  
+} else { function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+      var point = turf.point([e.latlng.lng, e.latlng.lat]);
+      var content = '';
+      polygons.eachLayer(function(layer) {
+      var feature = layer.feature;
+        if (turf.booleanPointInPolygon(point, feature)) {
+          content += "<div style='clear: both'></div><div><p>" + "<font size=3.5em>" + "<strong>" + 'Lot(s): ' + "</strong>" + feature.properties.lot_number + "</p>" /*+ "<center><img src='images/" + feature.properties.picture + "' style='width:200px;height:300x;'></center>"*/ + "<p>" + "<font size=3em>" + "<strong>" + 'Grantee: ' + "</strong>" + feature.properties.grantee + "</p><p>" + "<strong>" + 'Date: ' + "</strong>" + feature.properties.time + "</p><p>" + "<strong>" + 'Conveyance: ' + "</strong>" + feature.properties.cost + "</p><p>" + "<strong>" + feature.properties.restrictions2 + "</strong>" + "</p><p>" + "<strong>" + 'Summary: ' + "</strong>" + feature.properties.deed_summary + "</font size=3em>" + "</p><p>" + "<font size=3em><a href=https://kora.oakbluffsarchaeology.org/projects/2/forms/3/records/" + feature.properties.cot_link1 + " target='_blank'>" + "Click here for more info" + "</a>" + "</font size=3em>" + "</p></div>"; 
+    }
+  });
+var popup = L.popup({
+    maxHeight: 400,
+    minWidth: 220,
+    keepInView: true,    
+  })
+    .setLatLng(e.latlng)
+    .setContent(content)
+    .openOn(map);
+}   
+} 
+
+function onEachFeature (feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+    click: zoomToFeature,
+  });
+
+	var content = "<div style='clear: both'></div><div><h4>" + 'Lot number ' + feature.properties.lot_number + "</h4><center><img src='images/" + feature.properties.picture + "' style='width:200px;height:300x;'></center> <br><p>" + feature.properties.time + "</p><p>" + feature.properties.grantee + "</p><p>" + feature.properties.cost + "</p><a href='" + feature.properties.link + "' target='_blank'>" + "Click here for more info" + "</a>" + "</p></div>";
+	var p = layer.feature.properties;
+    p.index = "Lot " + p.lot_number + " | " + p.grantee + " | " + p.time + " | "+ p.cost + " | " + p.grantee_gender + " | " + p.grantee_racial_cat;
+    };
+
+
+    $.getJSON("data/historic-highlands-lots-with-data_12-13-2024_sort-by-date-v5.geojson", function (json){
+// add GeoJSON layer to the map once the file is loaded
+   polygons = L.geoJson(json ,{
+	  style: style,
+      onEachFeature: onEachFeature,
+        });map.fitBounds(polygons.getBounds());
+
+
+// Set the sliderControl options
+    var sliderControl = L.control.sliderControl({
+        layer: polygons, //REQUIRED
+        alwaysShowDate: true,
+        showAllPopups: true, // to show all popups, instead of one, same as popup option "autoClose: false"
+        showPopups: false // to set it so, when a marker is generated by the slider, its popup doesn't automatically display
+    });
+
+
+
+    var searchControl = new L.Control.Search({
+		layer: polygons,
+		propertyName: 'index',
+		moveToLocation: function(latlng, title, map) {
+			//map.fitBounds( latlng.layer.getBounds() );
+			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+  			map.setView(latlng, zoom); // access the zoom
+		}
+});        
+
+searchControl.on('search:locationfound', function(e) {
+		
+		//console.log('search:locationfound', );
+
+		//map.removeLayer(this._markerSearch)
+    if(e.layer._popup)
+			e.layer.openPopup(); 
+		e.layer.setStyle({weight: 5,
+        fillColor: '#feb3ff',
+		dashArray: '',
+		fillOpacity: 0.7});
+      
+
+	}).on('search:collapsed', function(e) {
+
+		polygons.eachLayer(function(layer) {	//restore feature color
+			polygons.resetStyle(layer);
+		});	
+});
+	
+map.addControl( searchControl );  //inizialize search control
+    
+// Add the slider to the map
+map.addControl(sliderControl);
+
+// Initialize the slider
+sliderControl.startSlider();
+
+});
+
+L.control.Legend({
+    position: "bottomright",
+            collapsed: false,
+            symbolWidth: 24,
+            opacity: 1,
+            column: 1,
+    legends: [{
+        label: "Proerties Owned at the Time",
+        type: "polygon",
+        sides: 4,
+        color: "#009e9b",
+        fillColor: "#009e9b",
+        weight: 2
+    }, {
+        label: "Properties with Restrictive Covenants",
+        type: "polygon",
+        sides: 4,
+        color: "#9f9b00",
+        fillColor: "#9f9b00",
+        weight: 2
+    }, {
+        label: "Properties owned by People of African descent",
+        type: "polygon",
+        sides: 4,
+        color: "#58002e",
+        weight: 3
+    }]
+}).addTo(map);
+
+/*var sidebar = L.control.sidebar({ container: 'sidebar' })
+            .addTo(map)
+            .open('home');*/
+            
+var sidebar = L.control.sidebar('sidebar').addTo(map).open('home');
+            
+
+</script>
+
+  
+
+</body>
+
+</html>
