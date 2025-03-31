@@ -8,7 +8,7 @@ L.Control.SliderControl = L.Control.extend({
         timeStrLength: 19,  // the size of  yyyy-mm-dd hh:mm:ss - if millis are present this will be larger
         maxValue: -1,
         minValue: 0,
-        showAllOnStart: false,
+        showAllOnStart: true,
         markers: null,
         range: true,
         follow: 0,
@@ -33,17 +33,26 @@ L.Control.SliderControl = L.Control.extend({
         this.options.map = map;
         // Create a control sliderContainer with a jquery ui slider
         this.container = L.DomUtil.create('div', '', this._container);
-        var sliderContainer = L.DomUtil.create('div', '', this.sliderBoxContainer);
-        
         this.sliderBoxContainer = L.DomUtil.create('div', 'slider', this.container);
+        var sliderContainer = L.DomUtil.create('div', '', this.sliderBoxContainer);
         sliderContainer.id = "leaflet-slider";
-        $(this.container).append('<div class="prevent-select" style="margin: 0 5px 0 5px; position: relative; color: blue; text-shadow: 2px 2px 4px white; font-size: 1.25em; white-space: normal; text-align: center; border-radius: 5px; font-weight: bold; background-color:white; display:inline-block;"> <div id="slider-min"></div>  -  <div id="slider-max"></div></div>');
+       if (!this.options.range) {
+       $(this.container).append('<div id="slider-min"></div><div id="slider-max"></div>');
+       }else{
+        $(this.container).append('<div id="slider-min"></div><div id="slider-max"></div><div id="slider-current"><span class="start-time"></span> &mdash; <span class="end-time"></span></div>');
+       }
+
         
         L.DomUtil.create('div', 'ui-slider-handle', sliderContainer);
         this.timestampContainer = L.DomUtil.create('div', 'slider', this.container);
         this.timestampContainer.id = "slider-timestamp";
-
-        this.timestampContainer.style.cssText = "font-weight:bold; color:black;background-color:#FFFFFF; text-shadow:0px 0px 5px white; font-size:20px; left:390px; top:2px; white-space:normal;text-align:center; width:225px; border-radius:5px;box-shadow:0 1px 7px rgba(0, 0, 0, 0.65); user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;";
+        if (!this.options.range) {
+            this.timestampContainer.style.cssText = "font-weight:bold; color:black; background-color: rgb(255, 255, 255, 0.6);";
+        }else{
+            this.timestampContainer.style.cssText = "visibility:hidden !important";
+        }
+	
+        
 
         //Prevent map panning/zooming while using the slider
         L.DomEvent.disableClickPropagation(this.sliderBoxContainer);
@@ -117,9 +126,9 @@ L.Control.SliderControl = L.Control.extend({
         }
         $('#slider-min', this.container).html(this.options.markers[this.options.minValue].feature.properties[this.options.timeAttribute]);
         $('#slider-max', this.container).html(this.options.markers[this.options.maxValue].feature.properties[this.options.timeAttribute]);
-                this.$currentStartDiv = $('#slider-current .start-time', sliderContainer);
+                this.$currentStartDiv = $('#slider-current .start-time', this.container);
         this.$currentEndDiv = $('#slider-current .end-time', this.container);
-        this._updateCurrentDiv(0,0);
+        this._updateCurrentDiv(0,1);
         
         return this.container;
     },
@@ -197,6 +206,7 @@ L.Control.SliderControl = L.Control.extend({
                                map.addLayer(_options.markers[i]);
                                fg.addLayer(_options.markers[i]);
                            }
+                        that._updateCurrentDiv(ui.values[0], ui.values[1]);
                         }
                     }else if(_options.follow > 0){
                         for (i = ui.value - _options.follow + 1; i <= ui.value ; i++) {
@@ -228,6 +238,7 @@ L.Control.SliderControl = L.Control.extend({
                             }
                         }
                     }
+                    
 
                     if(_options.showPopups) {
                         that._openPopups(markers);
@@ -243,6 +254,9 @@ L.Control.SliderControl = L.Control.extend({
                 }
             }
         });
+        
+        
+        
         if (_options.alwaysShowDate) {
             timestampContainer.style.display = "block";
 
@@ -342,7 +356,6 @@ L.Control.SliderControl = L.Control.extend({
     },
 
 });
-
 
 L.control.sliderControl = function (options) {
     return new L.Control.SliderControl(options);
