@@ -163,7 +163,7 @@ html, body {
     
 
       <script id="rendered-js" >
-var basemap_color = 'https://api.maptiler.com/maps/topo-v2/tiles.json?key=kUPH9bhggOn8sGeOtVCW';
+var basemap_color = 'https://api.maptiler.com/maps/topo-v2/{z}/{x}/{y}.png?key=kUPH9bhggOn8sGeOtVCW';
 var basemap_satellite = 'https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}.jpg?key=kUPH9bhggOn8sGeOtVCW';
 var overlay_1890 = 'https://burne138.nextgis.com/api/component/render/tile?resource=3&nd=204&z={z}&x={x}&y={y}';
 var overlay_1906 = 'https://burne138.nextgis.com/api/component/render/tile?resource=4&nd=204&z={z}&x={x}&y={y}';
@@ -178,9 +178,12 @@ var map = L.map('map', {
 
 var basemapLayerColor = L.tileLayer(basemap_color, {
   noWrap: true,
-  minZoom: 11,
+  tileSize: 512,
+  zoomOffset: -1,
   maxZoom: 20,
-  attribution: '<div id="content-attribution">Topo Basemap &copy; <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></div>'
+  minZoom: 11,
+  attribution: '<div id="content-attribution">Satellite Basemap &copy; <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+  crossOrigin: true
 }).addTo(map);
 
 var basemapLayerSatellite = L.tileLayer(basemap_satellite,{
